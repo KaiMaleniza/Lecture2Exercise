@@ -22,29 +22,33 @@ class Cart:
         self.lines: list[dict] = []
 
     def add_item(self, item: dict, qty: int = 1) -> None:
-        # TODO: validate FIRST, then mutate.
-        if qty < 1:                 
-            raise ValueError("Quantity must be at least 1")
+        if qty < 1:
+            raise ValueError("Quantuty must be at least 1")
 
-        if not item["available"]:   
+        if not item["available"]:
             raise OutOfStockError(f"{item['name']} is out of stock")
 
-        self.lines.appends({
-            "id": item["id"],
-            "name": item["name"],
-            "price": item["price"],
-            "qty": qty
-        })
+        for line in self.lines:
+            if line["id"] == item["id"]:
+                line["qty"] += qty
+                return
+
+        self.lines.append({
+        "id": item["id"],
+        "name": item["name"],
+        "price": item["price"],
+        "qty": qty
+    })
         
 
     def remove_item(self, item_id: int) -> None:
         # TODO: raise KeyError if the item is not in the cart
         for line in self.lines:
-            if line["item_id"] == item_id:
+            if line["id"] == id:
                 self.lines.remove(line)
                 return
 
-        raise KeyError(f"Item {item_id} is not in the cart")
+        raise KeyError(f"Item {id} is not in the cart")
 
     def total(self) -> float:
         return round(sum(line["price"] * line["qty"] for line in self.lines), 2)
